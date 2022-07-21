@@ -2,8 +2,15 @@
 local Nbody,r,mass,G,theta,res,intB,intV,dt
 -- // Variables
 function setup()
-    -- // Config
-      Nbody = 0
-      r = 0
-      mass = 1
-      G = 0.01 -- Gravitation constant
+  -- // Config
+    Nbody = 0
+    r = 0
+    mass = 1
+    G = 0.01 -- Gravitation constant
+    theta = 0.2
+    res = 0.2
+    intB = width / 2
+    intV = 0.1
+    dt = 1
+    -- // Variables 
+end
