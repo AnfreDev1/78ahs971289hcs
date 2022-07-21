@@ -1,0 +1,41 @@
+-- // This is a module
+local utils = {}
+-- // Math functions 
+-- Addition math
+function utils.add(a:Vector3,b,Vector3)
+    return Vector3.new(a.X+b.X,a.Y+b.Y,a.Z+b.Z)
+end
+-- Subtraction math
+function utils.sub(a:Vector3,b,Vector3)
+    return Vector3.new(a.X-b.X,a.Y-b.Y,a.Z-b.Z)
+end
+-- Multiplication math
+function utils.mult(a:Vector3,scale:Status)
+    return Vector3.new(a.X*scale,a.Y*scale,a.Z*scale)
+end
+-- Other math function
+function utils.distSquared(a:Vector3,b:Vector3)
+    return (a.X-b.X) * (a.X-b.X) + (a.Y-b.Y) * (a.Y-b.Y) + (a.Z-b.Z) * (a.Z-b.Z)
+end
+-- Other math function
+function utils.dist(a:Vector3,b:Vector3)
+    return math.sqrt(utils.distSquared(a,b))
+end
+-- Other math function
+function utils.normalize(a:Vector3)
+    return utils.mult(a)
+end
+-- Other math function
+function utils.dot(a:Vector3,b:Vector3)
+    return a.X*b.X+a.Y*b.Y+a.Z*b.Z
+end
+-- Other math function
+function utils.invSqrt(x)
+    local xhalf = 0.5 * x
+    local i = 
+
+    x *= (1.5 - xhalf * x*x)
+    return x
+end    
+-- Return
+return utils
