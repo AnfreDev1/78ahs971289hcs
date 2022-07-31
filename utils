@@ -1,62 +1,71 @@
 -- // This is a module
 local UE = {}
 local bits = {}
-
 -- // Bits function
+-- // // Mag sqrt function
+function bits.magSquared(a:Vector3)
+	return math.sqrt((a.X ^ 2 *a.Y ^ 2 ))
+end
+-- // // Get float number function
+function bits.GetFloatNum(x)
+	return math.fmod(x,1)
+end
 -- // // Bits from function
 function bits.from(bits)
-    local y = bits / 0x800000 - 125
-    local exp = math.floor(y) -1
-    return math.ldexp((y- exp) / 2, exp)
+	local y = bits / 0x800000 - 125
+	local exp = math.floor(y) -1
+	return math.ldexp((y- exp) / 2, exp)
 end
 -- // // Bits to function
 function bits.to(x)
-    local man,exp = math.frexp(x)
-    return (2* man + (exp + 125) ) * 0x800000
+	local man,exp = math.frexp(x)
+	return (2* man + (exp + 125) ) * 0x800000
 end
 -- // // bitwise right shift function
-function bits.rshift(x,by)
-    return math.floor(x / 2 ^ by)
+function bits.rshift(x,by) -- // <<
+	return math.floor(x / 2 ^ by)
 end
 -- // // bitwise left shift function
-function bits.lshift(x,by)
-    return x * 2 ^ by
+function bits.lshift(x,by) -- // >>
+	return x * 2 ^ by
 end
 -- // Utils function
 -- // // Subtraction function
 function UE.sub(a:Vector3,b:Vector3)
-    return Vector3.new(a.X-b.X, a.Y-b.Y, a.Z-b.Z)
+	return Vector3.new(a.X-b.X, a.Y-b.Y, a.Z-b.Z)
 end
 -- // // Add function
 function UE.add(a:Vector3,b:Vector3)
-    return Vector3.new(a.X+b.X, a.Y+b.Y, a.Z+b.Z)
+	return Vector3.new(a.X+b.X, a.Y+b.Y, a.Z+b.Z)
 end
 -- // // Dist function
 function UE.dist(a:Vector3,b:Vector3)
-    return math.sqrt(UE.distSquared(a,b));
+	return math.sqrt(UE.distSquared(a,b));
 end
 -- // // Dist Squared function
 function UE.distSquared(a:Vector3,b:Vector3)
-    return (a.X-b.X) * (a.X-b.X) + (a.Y-b.Y) * (a.Y-b.Y) + (a.Z-b.Z) * (a.Z-b.Z)
+	return (a.X-b.X) * (a.X-b.X) + (a.Y-b.Y) * (a.Y-b.Y) + (a.Z-b.Z) * (a.Z-b.Z)
 end
 -- // // Multiplication function
 function UE.Mult(a:Vector3,scalar)
-    return Vector3.new(a.X * scalar,a.Y *scalar,a.Z *scalar)
+	return Vector3.new(a.X * scalar,a.Y *scalar,a.Z *scalar)
 end
 -- // // Normal size function
 function UE.normalize(a:Vector3)
-    return UE.Mult(a,UE.invSqrt())
+	return UE.Mult(a,UE.invSqrt(bits.magSquared(a)))
 end
 -- // // Dot function
 function UE.dot(a:Vector3,b:Vector3)
-    return a.X * b.X + a.Y * b.Y + a.Z * b.Z
+	return a.X * b.X + a.Y * b.Y + a.Z * b.Z
 end
 -- // // Inverse Sqrt
 function UE.invSqrt(x)
-    local xhalf = 0.5 * x
-    local i = bits.to(x)
-    i = 0x5f3759df - (bits.lshift(i,2))
-    x = bits.to(i)
-    x *= (1.5-xhalf*x*x)
-    return x
+	local xhalf = bits.GetFloatNum(0.5) * x
+	local i = bits.to(x)
+	i = 0x5f3759df - (bits.lshift(i,2))
+	x = bits.to(i)
+	x *= (bits.GetFloatNum(1.5)-xhalf*x*x)
+	return x
 end
+-- return
+return UE
