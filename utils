@@ -1,41 +1,62 @@
 -- // This is a module
-local utils = {}
--- // Math functions 
--- Addition math
-function utils.add(a:Vector3,b,Vector3)
-    return Vector3.new(a.X+b.X,a.Y+b.Y,a.Z+b.Z)
+local UE = {}
+local bits = {}
+
+-- // Bits function
+-- // // Bits from function
+function bits.from(bits)
+    local y = bits / 0x800000 - 125
+    local exp = math.floor(y) -1
+    return math.ldexp((y- exp) / 2, exp)
 end
--- Subtraction math
-function utils.sub(a:Vector3,b,Vector3)
-    return Vector3.new(a.X-b.X,a.Y-b.Y,a.Z-b.Z)
+-- // // Bits to function
+function bits.to(x)
+    local man,exp = math.frexp(x)
+    return (2* man + (exp + 125) ) * 0x800000
 end
--- Multiplication math
-function utils.mult(a:Vector3,scale:Status)
-    return Vector3.new(a.X*scale,a.Y*scale,a.Z*scale)
+-- // // bitwise right shift function
+function bits.rshift(x,by)
+    return math.floor(x / 2 ^ by)
 end
--- Other math function
-function utils.distSquared(a:Vector3,b:Vector3)
+-- // // bitwise left shift function
+function bits.lshift(x,by)
+    return x * 2 ^ by
+end
+-- // Utils function
+-- // // Subtraction function
+function UE.sub(a:Vector3,b:Vector3)
+    return Vector3.new(a.X-b.X, a.Y-b.Y, a.Z-b.Z)
+end
+-- // // Add function
+function UE.add(a:Vector3,b:Vector3)
+    return Vector3.new(a.X+b.X, a.Y+b.Y, a.Z+b.Z)
+end
+-- // // Dist function
+function UE.dist(a:Vector3,b:Vector3)
+    return math.sqrt(UE.distSquared(a,b));
+end
+-- // // Dist Squared function
+function UE.distSquared(a:Vector3,b:Vector3)
     return (a.X-b.X) * (a.X-b.X) + (a.Y-b.Y) * (a.Y-b.Y) + (a.Z-b.Z) * (a.Z-b.Z)
 end
--- Other math function
-function utils.dist(a:Vector3,b:Vector3)
-    return math.sqrt(utils.distSquared(a,b))
+-- // // Multiplication function
+function UE.Mult(a:Vector3,scalar)
+    return Vector3.new(a.X * scalar,a.Y *scalar,a.Z *scalar)
 end
--- Other math function
-function utils.normalize(a:Vector3)
-    return utils.mult(a)
+-- // // Normal size function
+function UE.normalize(a:Vector3)
+    return UE.Mult(a,UE.invSqrt())
 end
--- Other math function
-function utils.dot(a:Vector3,b:Vector3)
-    return a.X*b.X+a.Y*b.Y+a.Z*b.Z
+-- // // Dot function
+function UE.dot(a:Vector3,b:Vector3)
+    return a.X * b.X + a.Y * b.Y + a.Z * b.Z
 end
--- Other math function
-function utils.invSqrt(x)
+-- // // Inverse Sqrt
+function UE.invSqrt(x)
     local xhalf = 0.5 * x
-    local i = 
-
-    x *= (1.5 - xhalf * x*x)
+    local i = bits.to(x)
+    i = 0x5f3759df - (bits.lshift(i,2))
+    x = bits.to(i)
+    x *= (1.5-xhalf*x*x)
     return x
-end    
--- Return
-return utils
+end
